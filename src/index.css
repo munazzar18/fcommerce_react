@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  color: #030e12; /* Sets the font color for the entire app */
+  background-color: #d1c6c5;
+}

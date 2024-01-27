@@ -1,0 +1,26 @@
+NAV BAR
+bg-gradient-to-r from-blue-700 via-blue-800 to-gray-900
+
+Border
+border border-gradient-to-t from-orange-500 to-yellow-300
+
+
+one product bg:
+to right
+bg-gradient-to-r from-green-200 via-green-300 to-blue-500
+to left
+bg-gradient-to-l from-green-200 via-green-300 to-blue-500
+
+
+NAVbutton: className="btn border-0 bg-kala text-peela hover:bg-neela hover:text-kala"
+
+new colors:
+peela: #fcde67
+neela: #5bccf6
+kala:  #030e12
+
+
+Final Colors:
+my_black: #030e12
+my_gray: #D1C6C5
+my_white: #FAF9F8

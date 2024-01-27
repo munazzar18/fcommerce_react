@@ -1,0 +1,32 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LandingPage from "./LandingPage";
+import Header from "./components/Header";
+import product from "./productById/product";
+
+const WithNavBar = ({ Component, ...rest }: { Component: any }) => (
+  <>
+    <Header />
+    <Component {...rest} />
+  </>
+);
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* <Route path="/login" element={<Login />}></Route>
+        <Route path="/register" element={<Register />}></Route> */}
+        <Route
+          path="/"
+          element={<WithNavBar Component={LandingPage} />}
+        ></Route>
+        <Route
+          path="/product/:id"
+          element={<WithNavBar Component={product} />}
+        ></Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
