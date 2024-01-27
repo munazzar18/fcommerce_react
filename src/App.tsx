@@ -8,6 +8,7 @@ import product from "./productById/product";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Categories from "./pages/Categories";
+import Order from "./pages/Order";
 
 const WithNavBar = ({ Component, ...rest }: { Component: any }) => (
   <>
@@ -38,6 +39,10 @@ function App() {
           <Route
             path="/categories/:categoryId"
             element={<WithNavBar Component={Categories} />}
+          ></Route>
+          <Route
+            path="/order"
+            element={<WithNavBar Component={Order} />}
           ></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>

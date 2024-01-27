@@ -1,3 +1,5 @@
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 
 export default function Header() {
@@ -9,13 +11,32 @@ export default function Header() {
             FCommerce
           </Link>
         </div>
+        <div className="w-96 mx-2">
+          <select className="select select-bordered w-full">
+            <option disabled selected>
+              Categories
+            </option>
+            <option>Mobile</option>
+            <option>Clothes</option>
+          </select>
+        </div>
+        <div className="relative w-full mx-4">
+          <input
+            type="text"
+            placeholder="Search"
+            className="input input-bordered py-2 pl-10 pr-4 rounded-lg w-full"
+          />
+          <button className="absolute right-0 top-0 mt-3 mr-6">
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
+          </button>
+        </div>
         <div className="flex-none">
           <div className="dropdown dropdown-end">
             <Link to="/cart">
               <div
                 tabIndex={0}
                 role="button"
-                className="btn btn-circle border-0 "
+                className="btn btn-circle btn-ghost border-0 "
               >
                 <div className="indicator">
                   <svg

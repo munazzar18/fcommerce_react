@@ -1,4 +1,12 @@
+import { useNavigate } from "react-router-dom";
+
 const Checkout = () => {
+  const navigate = useNavigate();
+
+  const handleOrder = () => {
+    navigate("/order");
+  };
+
   return (
     <div className="w-3/4 mx-auto">
       <div className=" p-8 mb-4">
@@ -57,7 +65,10 @@ const Checkout = () => {
             </div>
             <div className="flex justify-center mb-4">
               <div className="w-[100%]">
-                <button className="btn btn-outline w-[100%]">
+                <button
+                  className="btn btn-outline w-[100%]"
+                  onClick={handleOrder}
+                >
                   Place Order
                 </button>
               </div>
