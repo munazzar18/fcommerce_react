@@ -1,7 +1,3 @@
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "./state/Store";
-import { productsAsync } from "./features/products/Products.slice";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Carousel } from "react-responsive-carousel";
 
