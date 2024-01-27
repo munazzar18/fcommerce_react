@@ -71,9 +71,7 @@ const Cart = () => {
                             id="quantity"
                             type="text"
                             value={quantity}
-                            onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => setQuantity(e.target.value)}
+                            onChange={(e: any) => setQuantity(e.target.value)}
                             className="input input-border-0 w-16 text-center"
                           />
                           <button
