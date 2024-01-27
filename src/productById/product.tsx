@@ -1,9 +1,9 @@
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { AppDispatch, RootState } from "../state/Store";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { productByIdAsync } from "../features/products/Products.slice";
+// import { useSelector } from "react-redux";
+// import { useParams } from "react-router-dom";
+// import { AppDispatch, RootState } from "../state/Store";
+// import { useDispatch } from "react-redux";
+// import { productByIdAsync } from "../features/products/Products.slice";
+import { useState } from "react";
 
 import { Carousel } from "react-responsive-carousel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -83,9 +83,7 @@ const product = () => {
                 id="quantity"
                 type="text"
                 value={quantity}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setQuantity(e.target.value)
-                }
+                onChange={(e: any) => setQuantity(e.target.value)}
                 className="input input-border-0 w-16 text-center"
               />
               <button
