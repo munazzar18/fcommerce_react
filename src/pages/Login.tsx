@@ -1,16 +1,12 @@
-import { Link } from "react-router-dom";
-import { AppDispatch } from "../state/Store";
-import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { loginAsync } from "../features/users/users.slice";
 import { ToastContainer, toast } from "react-toastify";
-import { useCookies } from "react-cookie";
+import AuthService from "../services/AuthService";
 
 const Login = () => {
-  const [cookies, setCookes] = useCookies(["authUser"]);
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch<AppDispatch>();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === "email") {
@@ -25,19 +21,15 @@ const Login = () => {
     password: password,
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(loginAsync(formData)).then((response) => {
-      if (response.payload != undefined) {
-        setCookes("authUser", response.payload.data);
-        toast.success(response.payload.message);
-      } else {
-        toast.error(response?.error.message);
-      }
-    });
-
-    console.log("Cookie:", cookies);
-
+    const res = await AuthService.login(formData);
+    if (!res.code) {
+      navigate("/");
+      toast.success(res.message);
+    } else {
+      toast.error(res.response.data.message);
+    }
     setEmail("");
     setPassword("");
   };

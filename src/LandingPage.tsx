@@ -72,7 +72,10 @@ const LandingPage = () => {
           <div className="flex flex-wrap justify-between">
             {categories.map((cat) => {
               return (
-                <div className="card w-36 bg-my_white shadow-md key={cat.id} mb-3">
+                <div
+                  className="card w-36 bg-my_white shadow-md mb-3"
+                  key={cat.id}
+                >
                   <Link to={`categories/${cat.id}`}>
                     <figure>
                       <img

@@ -1,8 +1,20 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import AuthService from "../services/AuthService";
 
 export default function Header() {
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    AuthService.logout();
+    navigate("/login");
+  };
+
+  const isLoggedIn = AuthService.isAuthenticated();
+  const userData = AuthService.getUser();
+  const username = userData?.username;
+
   return (
     <div className="bg-my_white">
       <div className="navbar bg-my_white shadow-md pb-2 w-3/4 mx-auto">
@@ -13,9 +25,7 @@ export default function Header() {
         </div>
         <div className="w-96 mx-2">
           <select className="select select-bordered w-full">
-            <option disabled selected>
-              Categories
-            </option>
+            <option value={""}>Categories</option>
             <option>Mobile</option>
             <option>Clothes</option>
           </select>
@@ -60,7 +70,11 @@ export default function Header() {
           </div>
           <div className="dropdown dropdown-end me-6 px-6">
             <div tabIndex={0} role="button" className="btn btn-outline">
-              <div className="w-10">Menu</div>
+              {isLoggedIn === true ? (
+                <div className="w-10">{username}</div>
+              ) : (
+                <div className="w-10">Menu</div>
+              )}
             </div>
             <ul
               tabIndex={0}
@@ -72,9 +86,15 @@ export default function Header() {
               <li>
                 <a>Settings</a>
               </li>
-              <li>
-                <Link to="/login">Logout</Link>
-              </li>
+              {isLoggedIn === true ? (
+                <li>
+                  <a onClick={handleLogOut}>Logout</a>
+                </li>
+              ) : (
+                <li>
+                  <Link to="/login">Login</Link>
+                </li>
+              )}
             </ul>
           </div>
         </div>

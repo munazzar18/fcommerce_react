@@ -9,6 +9,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Categories from "./pages/Categories";
 import Order from "./pages/Order";
+import VerifyOtp from "./pages/VerifyOtp";
 
 const WithNavBar = ({ Component, ...rest }: { Component: any }) => (
   <>
@@ -44,6 +45,7 @@ function App() {
             path="/order"
             element={<WithNavBar Component={Order} />}
           ></Route>
+          <Route path="/verfiy-otp" element={<VerifyOtp />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
         </Routes>
