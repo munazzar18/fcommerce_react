@@ -68,28 +68,35 @@ export default function Header() {
               </div>
             </Link>
           </div>
-          <div className="dropdown dropdown-end me-6 px-6">
-            <div tabIndex={0} role="button" className="btn btn-outline">
+          <div className="dropdown dropdown-end me-6">
+            <div tabIndex={0} role="button" className="">
               {isLoggedIn === true ? (
-                <div className="w-10">{username}</div>
+                <div className="w-10">
+                  {" "}
+                  <p className="text-xs">Hello, {username}</p>
+                </div>
               ) : (
-                <div className="w-10">Menu</div>
+                <div className="w-10">
+                  <p className="text-xs">Hello, Sign in</p>
+                </div>
               )}
             </div>
             <ul
               tabIndex={0}
               className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52 bg-my_white"
             >
-              <li>
-                <a className="justify-between">Profile</a>
-              </li>
-              <li>
-                <a>Settings</a>
-              </li>
               {isLoggedIn === true ? (
-                <li>
-                  <a onClick={handleLogOut}>Logout</a>
-                </li>
+                <>
+                  <li>
+                    <a className="justify-between">Profile</a>
+                  </li>
+                  <li>
+                    <a>Settings</a>
+                  </li>
+                  <li>
+                    <a onClick={handleLogOut}>Logout</a>
+                  </li>
+                </>
               ) : (
                 <li>
                   <Link to="/login">Login</Link>

@@ -5,6 +5,7 @@ import JwtService from "../services/JwtService";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 
+
 /**
  * @description service to call HTTP request via Axios
  */
@@ -21,11 +22,17 @@ class ApiService {
    * @description set the default HTTP request headers
    */
   public static setHeader(): void {
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${JwtService.getToken()}`;
-    axios.defaults.headers.common["Content-Type"] =
-      "application/json";
+
+    const paredToken = JwtService.getToken()
+    if (paredToken) {
+      const token = JSON.parse(paredToken)
+      const accessToken = token.access_token
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${accessToken}`;
+      axios.defaults.headers.common["Content-Type"] =
+        "application/json";
+    }
   }
 
   /**
@@ -44,7 +51,7 @@ class ApiService {
    * @param slug: string
    * @returns Promise<AxiosResponse>
    */
-  public static get(resource: string, slug = "" as string): Promise<AxiosResponse> {
+  public static get(resource: string): Promise<AxiosResponse> {
     return axios.get(`${resource}`);
   }
 

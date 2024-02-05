@@ -1,24 +1,31 @@
-// import { useSelector } from "react-redux";
-// import { useParams } from "react-router-dom";
-// import { AppDispatch, RootState } from "../state/Store";
-// import { useDispatch } from "react-redux";
-// import { productByIdAsync } from "../features/products/Products.slice";
-import { useState } from "react";
-
+import { useContext, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate, useParams } from "react-router-dom";
+import CartContext from "../context/CartContext";
+import AuthService from "../services/AuthService";
+import { ToastContainer, toast } from "react-toastify";
 
 const product = () => {
-  //   const product = useSelector((state: RootState) => state.products);
-  //   const dispatch = useDispatch<AppDispatch>();
-  //   const { id } = useParams();
-
-  //   useEffect(() => {
-  //     dispatch(productByIdAsync(Number(id)));
-  //   }, []);
+  const isLoggedIn = AuthService.isAuthenticated();
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { setCartItem, addToCart, getUserCart } = useContext(CartContext);
 
   const [quantity, setQuantity] = useState(1);
+
+  const handleAddToCart = async () => {
+    if (isLoggedIn) {
+      const success = await addToCart(id, quantity);
+      const itemQuantity = success.data.quantity;
+      setCartItem(itemQuantity);
+      toast.success(success.message);
+      getUserCart(2)
+    } else {
+      navigate("/login");
+    }
+  };
 
   const handleIncrement = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
@@ -96,7 +103,13 @@ const product = () => {
           </div>
           <div className="flex justify-center items-center mb-8">
             <div className="mx-2 w-36">
-              <button className="btn btn-outline w-36">Add to Cart</button>
+              <button
+                className="btn btn-outline w-36"
+                onClick={handleAddToCart}
+              >
+                Add to Cart
+              </button>
+              <ToastContainer />
             </div>
             <div className="mx-2 w-36">
               <button className="btn btn-outline w-36">Buy Now</button>

@@ -6,11 +6,14 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 import { store } from "./state/Store.ts";
+import CartProvider from "./provider/CartProvider.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <CartProvider>
+        <App />
+      </CartProvider>
     </Provider>
   </React.StrictMode>
 );
