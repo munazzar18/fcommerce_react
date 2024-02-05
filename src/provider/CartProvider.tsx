@@ -8,8 +8,7 @@ const CartProvider = ({ children }) => {
   const getUserCart = async (id: number) => {
     const res = await ApiService.get(`order-item/userId/${id}`);
     const data = res.data.data;
-    // data.forEach(())
-    console.log("Get user cart:", res.data);
+    data.forEach((item) => setCartItem(item.quantity));
     return res.data;
   };
 
