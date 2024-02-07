@@ -1,6 +1,7 @@
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    themes: ["light", "dark", "cupcake"],
     extend: {
       colors: {
         my_white: "#FAF9F8",

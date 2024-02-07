@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import CartContext from "../context/CartContext";
 import ApiService from "../services/ApiService";
 
-const CartProvider = ({ children }) => {
+interface CartProviderProps {
+  children: ReactNode;
+}
+
+const CartProvider = ({ children }: CartProviderProps) => {
   const [cartItem, setCartItem] = useState(0);
 
   const getUserCart = async (id: number) => {

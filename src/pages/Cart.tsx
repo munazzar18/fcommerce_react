@@ -1,19 +1,45 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import ApiService from "../services/ApiService";
+import AuthService from "../services/AuthService";
+import { Cart } from "../helper/interfaces";
+import CartContext from "../context/CartContext";
+import { ToastContainer, toast } from "react-toastify";
 
-const Cart = () => {
+const UserCart = () => {
+  const [carts, setCarts] = useState<Cart[]>([]);
   const [quantity, setQuantity] = useState(1);
+  const { cartItem, addToCart, removeFromCart, setCartItem, getUserCart } =
+    useContext(CartContext);
+  const user = AuthService.getUser();
+  const userId = user.id;
 
-  const handleIncrement = () => {
-    setQuantity((prevQuantity) => prevQuantity + 1);
+  const getMycart = async () => {
+    const res = await ApiService.get(`order-item/userId/${userId}`);
+    setCarts(res.data?.data);
   };
 
-  const handleDecrement = () => {
-    if (quantity > 1) {
-      setQuantity((prevQuantity) => prevQuantity - 1);
-    }
+  useEffect(() => {
+    getMycart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cartItem]);
+
+  const handleIncrement = async (productId: number, quantity: number) => {
+    const success = await addToCart(productId, quantity);
+    const ItemQuantity = success.data.quantity;
+    setCartItem(ItemQuantity);
+    toast.success(success.message);
+    getUserCart(userId);
+  };
+
+  const handleDecrement = async (productId: number, quantity: number) => {
+    const success = await removeFromCart(productId, quantity);
+    const itemQuantity = success.data.quantity;
+    setCartItem(itemQuantity);
+    toast.success(success.message);
+    getUserCart(userId);
   };
 
   return (
@@ -26,63 +52,69 @@ const Cart = () => {
               <div className="overflow-x-auto">
                 <table className="table">
                   <tbody>
-                    {/* row 1 */}
-                    <tr>
-                      <th>
-                        <label>
-                          <input type="checkbox" className="checkbox" />
-                        </label>
-                      </th>
-                      <td>
-                        <div className="flex items-center gap-3">
-                          <div className="avatar">
-                            <div className="mask mask-squircle w-12 h-12">
-                              <img
-                                src="/tailwind-css-component-profile-2@56w.png"
-                                alt="Avatar Tailwind CSS Component"
-                              />
+                    {carts.map((cart) => (
+                      <tr key={cart.id}>
+                        <th>
+                          <label>
+                            <input type="checkbox" className="checkbox" />
+                          </label>
+                        </th>
+                        <td>
+                          <div className="flex items-center gap-3">
+                            <div className="avatar">
+                              <div className="mask mask-squircle w-12 h-12">
+                                <img
+                                  src={cart.product.images[0]}
+                                  alt={cart.product.title}
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="font-bold">
+                                {cart.product.title}
+                              </div>
+                              <div className="text-sm opacity-50">
+                                Rs.{cart.product.price}/-
+                              </div>
                             </div>
                           </div>
-                          <div>
-                            <div className="font-bold">Product Title</div>
-                            <div className="text-sm opacity-50">
-                              United States
-                            </div>
+                        </td>
+
+                        <td>
+                          <p className="text-base font-semibold">
+                            Rs.{cart.totalPrice}/-
+                          </p>
+                        </td>
+                        <th>
+                          <div className="flex items-center">
+                            <button
+                              className="btn btn-sm btn-circle mr-2"
+                              onClick={() =>
+                                handleIncrement(cart.product.id, quantity)
+                              }
+                            >
+                              <FontAwesomeIcon icon={faPlus} />
+                            </button>
+                            <ToastContainer />
+                            <input
+                              id="quantity"
+                              type="text"
+                              value={cart.quantity}
+                              onChange={(e: any) => setQuantity(e.target.value)}
+                              className="input input-border-0 w-16 text-center"
+                            />
+                            <button
+                              className="btn btn-sm btn-circle ml-2"
+                              onClick={() =>
+                                handleDecrement(cart.product.id, quantity)
+                              }
+                            >
+                              <FontAwesomeIcon icon={faMinus} />
+                            </button>
                           </div>
-                        </div>
-                      </td>
-                      <td>
-                        Zemlak, Daniel and Leannon
-                        <br />
-                        <span className="badge badge-ghost badge-sm">
-                          Desktop Support Technician
-                        </span>
-                      </td>
-                      <td>Purple</td>
-                      <th>
-                        <div className="flex items-center">
-                          <button
-                            className="btn btn-sm btn-circle mr-2"
-                            onClick={handleIncrement}
-                          >
-                            <FontAwesomeIcon icon={faPlus} />
-                          </button>
-                          <input
-                            id="quantity"
-                            type="text"
-                            value={quantity}
-                            onChange={(e: any) => setQuantity(e.target.value)}
-                            className="input input-border-0 w-16 text-center"
-                          />
-                          <button
-                            className="btn btn-sm btn-circle ml-2"
-                            onClick={handleDecrement}
-                          >
-                            <FontAwesomeIcon icon={faMinus} />
-                          </button>
-                        </div>
-                      </th>
-                    </tr>
+                        </th>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -90,30 +122,37 @@ const Cart = () => {
           </div>
           <div className="col-span-5 p-4 bg-my_white">
             <h3 className="text-xl mb-4">Order Summary</h3>
-            <div className="flex justify-between mb-4">
-              <div className="">
-                <p className="text-md">Subtotal (1 Items)</p>
+            {carts.map((cart) => (
+              <div key={cart.id}>
+                <div className="flex justify-between mb-4">
+                  <div className="">
+                    <p className="text-md">Subtotal ({cart.quantity} Items)</p>
+                  </div>
+                  <div className="">
+                    <p className="text-md">Rs.{cart.totalPrice}/-</p>
+                  </div>
+                </div>
+                <div className="flex justify-between mb-4">
+                  <div className="">
+                    <p className="text-md">Shipping Fee</p>
+                  </div>
+                  <div className="">
+                    <p className="text-md">Free</p>
+                  </div>
+                </div>
+                <div className="flex justify-between mb-4">
+                  <div className="">
+                    <p className="text-md">Total</p>
+                  </div>
+                  <div className="">
+                    <p className="text-md text-orange-400 font-semibold">
+                      Rs.{cart.totalPrice}/-
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="">
-                <p className="text-md">Rs.422</p>
-              </div>
-            </div>
-            <div className="flex justify-between mb-4">
-              <div className="">
-                <p className="text-md">Shipping Fee</p>
-              </div>
-              <div className="">
-                <p className="text-md">Free</p>
-              </div>
-            </div>
-            <div className="flex justify-between mb-4">
-              <div className="">
-                <p className="text-md">Total</p>
-              </div>
-              <div className="">
-                <p className="text-md text-orange-400 font-semibold">Rs.422</p>
-              </div>
-            </div>
+            ))}
+
             <div className="flex justify-center mb-4">
               <div className="w-[100%]">
                 <Link to="/checkout" className="btn btn-outline w-[100%]">
@@ -128,4 +167,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default UserCart;

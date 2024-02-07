@@ -1,6 +1,14 @@
+interface CartContextProps {
+    cartItem: number;
+    setCartItem: React.Dispatch<React.SetStateAction<number>>;
+    getUserCart: (id: number) => Promise<any>; // Update the return type accordingly
+    addToCart: (productId: number, quantity: number) => Promise<any>; // Update the return type accordingly
+    removeFromCart: (productId: number, quantity: number) => Promise<any>; // Update the return type accordingly
+}
+
+
 import { createContext } from "react";
 
-
-const CartContext = createContext(null)
+const CartContext = createContext<CartContextProps | undefined>(undefined);
 
 export default CartContext
