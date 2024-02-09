@@ -14,7 +14,7 @@ const UserCart = () => {
   const { cartItem, addToCart, removeFromCart, setCartItem, getUserCart } =
     useContext(CartContext);
   const user = AuthService.getUser();
-  const userId = user.id;
+  const userId = user?.id;
 
   const getMycart = async () => {
     const res = await ApiService.get(`order-item/userId/${userId}`);

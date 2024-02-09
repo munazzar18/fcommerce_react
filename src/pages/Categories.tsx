@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Categories = () => {
   return (
-    <div className="w-3/4 mx-auto">
+    <div className="w-3/4 mx-auto mb-4">
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-3 p-4 bg-my_white">
           <div>

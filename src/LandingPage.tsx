@@ -1,14 +1,16 @@
 import { Link } from "react-router-dom";
 import { Carousel } from "react-responsive-carousel";
+import ApiService from "./services/ApiService";
+import { useEffect, useState } from "react";
+import { type Product } from "./helper/interfaces";
 
 const LandingPage = () => {
-  // const dispatch = useDispatch<AppDispatch>();
+  const [products, setProducts] = useState<Product[]>([]);
 
-  // const products = useSelector((state: RootState) => state.products);
-
-  // useEffect(() => {
-  //   dispatch(productsAsync());
-  // }, [dispatch]);
+  const getAllProducts = async () => {
+    const res = await ApiService.get("product?page=1");
+    setProducts(res.data.data);
+  };
 
   const categories = [
     { id: 1, category: "Mobile" },
@@ -20,22 +22,9 @@ const LandingPage = () => {
     { id: 7, category: "Shoes" },
   ];
 
-  const products = [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 },
-    { id: 4 },
-    { id: 5 },
-    { id: 6 },
-    { id: 7 },
-    { id: 8 },
-    { id: 9 },
-    { id: 10 },
-    { id: 11 },
-    { id: 12 },
-    { id: 13 },
-    { id: 14 },
-  ];
+  useEffect(() => {
+    getAllProducts();
+  }, []);
 
   return (
     <>
@@ -103,18 +92,18 @@ const LandingPage = () => {
                     <Link to={`/product/${prod.id}`}>
                       <figure className="rounded-t-lg bg-my_white">
                         <img
-                          src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+                          src={prod.images[0]}
                           alt="product"
                           className="w-full aspect-square object-contain "
                         />
                       </figure>
                       <div className="card-body mb-2">
-                        <p className="font-bold">Title Here</p>
+                        <p className="font-bold"> {prod.title} </p>
                         <div className="flex justify-around">
                           <p className="indicator-item badge border-0 bg-[#030e12] text-my_white font-bold">
-                            Rs.1000
+                            Rs.{prod.price}
                           </p>
-                          <p className="text-end">Category</p>
+                          <p className="text-end">{prod.category.category}</p>
                         </div>
                       </div>
                     </Link>

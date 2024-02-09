@@ -10,12 +10,21 @@ import Checkout from "./pages/Checkout";
 import Categories from "./pages/Categories";
 import Order from "./pages/Order";
 import VerifyOtp from "./pages/VerifyOtp";
+import Sidebar from "./components/Sidebar";
+import SellerDashboard from "./seller/Seller-dashboard";
 
 const WithNavBar = ({ Component, ...rest }: { Component: any }) => (
   <>
     <Header />
     <Component {...rest} />
     <Footer />
+  </>
+);
+
+const WithSideBar = ({ Component, ...rest }: { Component: any }) => (
+  <>
+    <Sidebar />
+    <Component {...rest} />
   </>
 );
 
@@ -48,6 +57,10 @@ function App() {
           <Route path="/verfiy-otp" element={<VerifyOtp />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
+
+          {/* SELLER ROUTES BELOW */}
+
+          <Route path="/seller-dashboard" element={<Sidebar />}></Route>
         </Routes>
       </BrowserRouter>
     </>
