@@ -12,19 +12,13 @@ import Order from "./pages/Order";
 import VerifyOtp from "./pages/VerifyOtp";
 import Sidebar from "./components/Sidebar";
 import SellerDashboard from "./seller/Seller-dashboard";
+import AddProduct from "./seller/AddProduct";
 
 const WithNavBar = ({ Component, ...rest }: { Component: any }) => (
   <>
     <Header />
     <Component {...rest} />
     <Footer />
-  </>
-);
-
-const WithSideBar = ({ Component, ...rest }: { Component: any }) => (
-  <>
-    <Sidebar />
-    <Component {...rest} />
   </>
 );
 
@@ -60,7 +54,14 @@ function App() {
 
           {/* SELLER ROUTES BELOW */}
 
-          <Route path="/seller-dashboard" element={<Sidebar />}></Route>
+          <Route
+            path="/seller-dashboard"
+            element={<Sidebar pageContent={<SellerDashboard />} />}
+          ></Route>
+          <Route
+            path="/seller-add-product"
+            element={<Sidebar pageContent={<AddProduct />} />}
+          ></Route>
         </Routes>
       </BrowserRouter>
     </>

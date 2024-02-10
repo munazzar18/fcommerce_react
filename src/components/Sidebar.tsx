@@ -1,18 +1,21 @@
-import { Link } from "react-router-dom";
-import SellerDashboard from "../seller/Seller-dashboard";
+import { Link, useNavigate } from "react-router-dom";
+import AuthService from "../services/AuthService";
 
-const Sidebar = () => {
+const Sidebar = ({ pageContent }: { pageContent: React.ReactNode }) => {
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    AuthService.logout();
+    navigate("/login");
+  };
+
   return (
     <div>
       <div className="min-h-screen overflow-visible">
         <div className="drawer lg:drawer-open  ">
           <input id="my-drawer-2" type="checkbox" className="drawer-toggle " />
-          <div className="drawer-content flex flex-col items-center justify-center">
-            <div>
-              <SellerDashboard />
-            </div>
-          </div>
-          <div className="drawer-side bg-[#5bccf6] ">
+          <div className="drawer-content flex mx-6 mt-6">{pageContent}</div>
+          <div className="drawer-side bg-my_white ">
             <label
               htmlFor="my-drawer-2"
               aria-label="close sidebar"
@@ -28,15 +31,12 @@ const Sidebar = () => {
                     <Link to="/seller-dashboard">Dashboard</Link>
                   </li>
                   <li className="mb-2">
-                    <Link to="/admin/add-product">Add New Product</Link>
-                  </li>
-                  <li className="mb-2">
-                    <Link to="/admin/my-products">My Accounts</Link>
+                    <Link to="/seller-add-product">Add New Product</Link>
                   </li>
                 </div>
                 <div>
                   <li>
-                    <a>Logout</a>
+                    <a onClick={handleLogOut}>Logout</a>
                   </li>
                 </div>
               </div>

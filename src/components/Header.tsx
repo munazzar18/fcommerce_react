@@ -12,6 +12,7 @@ export default function Header() {
   const userData = AuthService.getUser();
   const username = userData?.username;
   const userId = userData?.id;
+  const userRole = userData?.role;
 
   const handleLogOut = () => {
     AuthService.logout();
@@ -108,6 +109,13 @@ export default function Header() {
                   <li>
                     <a onClick={handleLogOut}>Logout</a>
                   </li>
+                  {userRole === "seller" ? (
+                    <li>
+                      <a>My Dashboard</a>
+                    </li>
+                  ) : (
+                    ""
+                  )}
                 </>
               ) : (
                 <li>
