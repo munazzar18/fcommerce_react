@@ -37,7 +37,7 @@ const SellerDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {myProducts.map((product, index) => (
+                {myProducts?.map((product, index) => (
                   <tr>
                     <th>{index + 1}</th>
                     <td>{product.title}</td>

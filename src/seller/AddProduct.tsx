@@ -4,38 +4,45 @@ import { ToastContainer, toast } from "react-toastify";
 import { type Category } from "../helper/interfaces";
 
 const AddProduct = () => {
-  const initialFormData = {
+  const [submitDisabled, setSubmitDisabled] = useState(true);
+  const [formData, setFormData] = useState({
     title: "",
     price: "",
     quantity: "",
     images: [""],
-    category: "",
+    categoryId: "",
     description: "",
-  };
-
-  const [formData, setFormData] = useState(initialFormData);
+  });
   const [categories, setCategories] = useState<Category[]>([]);
 
   const getAllCategories = async () => {
     const res = await ApiService.get("category");
     setCategories(res.data.data);
   };
+  const handleFileChange = async (e) => {
+    const files = e.target.files;
+    console.log("Files:", files);
 
-  const resetFormData = () => {
-    setFormData(initialFormData);
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const filePath = e.target.files;
-    const filePathData = new FormData();
-    if (filePath) {
-      for (let i = 0; i < filePath.length; i++) {
-        filePathData.append("files", filePath[i]);
-      }
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append("files", files[i]);
     }
-    const res = await ApiService.post("product/upload", filePathData);
-    setFormData({ ...formData, images: res.data.data });
+
+    try {
+      const res = await fetch("product/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      setFormData({ ...formData, images: data.data });
+      toast.success(data.message);
+      setSubmitDisabled(false);
+    } catch (error) {
+      toast.error("Error uploading files: " + error.message);
+      console.error("Error uploading files:", error);
+    }
   };
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -46,14 +53,13 @@ const AddProduct = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const res = await ApiService.post("product", formData);
-      toast.success(res.data.message);
-      resetFormData();
-    } catch (error: any) {
-      toast.error(error.response.data.message);
-      resetFormData();
-    }
+    console.log("Form Data:", formData);
+    // try {
+    //   const res = await ApiService.post("product", formData);
+    //   toast.success(res.data.message);
+    // } catch (error: any) {
+    //   toast.error(error.response.data.message);
+    // }
   };
 
   useEffect(() => {
@@ -116,7 +122,9 @@ const AddProduct = () => {
                     <span className="label-text">Upload Images</span>
                   </div>
                   <input
+                    accept="images/*"
                     type="file"
+                    multiple
                     className="file-input file-input-bordered w-full "
                     onChange={handleFileChange}
                   />
@@ -128,6 +136,7 @@ const AddProduct = () => {
                     <span className="label-text">Category</span>
                   </div>
                   <select
+                    name="categoryId"
                     className="select select-bordered w-full "
                     onChange={handleChange}
                   >
@@ -154,7 +163,11 @@ const AddProduct = () => {
               />
             </label>
             <div className="flex justify-center">
-              <button type="submit" className="btn btn-outline w-full">
+              <button
+                type="submit"
+                className="btn btn-outline w-full"
+                disabled={submitDisabled}
+              >
                 Submit
               </button>
               <ToastContainer />

@@ -106,16 +106,16 @@ export default function Header() {
                   <li>
                     <a>Settings</a>
                   </li>
-                  <li>
-                    <a onClick={handleLogOut}>Logout</a>
-                  </li>
                   {userRole === "seller" ? (
                     <li>
-                      <a>My Dashboard</a>
+                      <Link to={"/seller-dashboard"}>My Dashboard</Link>
                     </li>
                   ) : (
                     ""
                   )}
+                  <li>
+                    <a onClick={handleLogOut}>Logout</a>
+                  </li>
                 </>
               ) : (
                 <li>
