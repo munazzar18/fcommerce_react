@@ -33,5 +33,12 @@ interface User {
     address: string;
 }
 
+interface OrderItem {
+    id: number;
+    quantity: number;
+    totalPrice: number;
+    product: Product
+}
 
-export type { Cart, Product, Category, User }
+
+export type { Cart, OrderItem, Product, Category, User }

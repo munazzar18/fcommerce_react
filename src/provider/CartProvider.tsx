@@ -10,9 +10,13 @@ const CartProvider = ({ children }: CartProviderProps) => {
   const [cartItem, setCartItem] = useState(0);
 
   const getUserCart = async (id: number) => {
-    const res = await ApiService.get(`order-item/userId/${id}`);
+    // const res = await ApiService.get(`order-item/userId/${id}`);
+    // const data = res.data.data;
+    // data.forEach((item) => setCartItem(item.quantity));
+    // return res.data;
+    const res = await ApiService.get(`cart/userCart/${id}`);
     const data = res.data.data;
-    data.forEach((item) => setCartItem(item.quantity));
+    data.forEach((item: any) => setCartItem(item.quantity));
     return res.data;
   };
 
@@ -21,7 +25,9 @@ const CartProvider = ({ children }: CartProviderProps) => {
       productId: productId,
       quantity: quantity,
     };
-    const res = await ApiService.post("order-item", formData);
+    // const res = await ApiService.post("order-item", formData);
+    // return res.data;
+    const res = await ApiService.post("cart", formData);
     return res.data;
   };
 
@@ -30,7 +36,7 @@ const CartProvider = ({ children }: CartProviderProps) => {
       productId: productId,
       quantity: quantity,
     };
-    const res = await ApiService.post("order-item/delete", formData);
+    const res = await ApiService.post("cart/delete", formData);
     return res.data;
   };
 

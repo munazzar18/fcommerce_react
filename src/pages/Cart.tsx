@@ -1,29 +1,29 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import ApiService from "../services/ApiService";
 import AuthService from "../services/AuthService";
 import { Cart } from "../helper/interfaces";
 import CartContext from "../context/CartContext";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const UserCart = () => {
   const [carts, setCarts] = useState<Cart[]>([]);
   const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
   const { cartItem, addToCart, removeFromCart, setCartItem, getUserCart } =
     useContext(CartContext);
   const user = AuthService.getUser();
   const userId = user?.id;
 
   const getMycart = async () => {
-    const res = await ApiService.get(`order-item/userId/${userId}`);
+    const res = await ApiService.get(`cart/userCart/${userId}`);
     setCarts(res.data?.data);
   };
 
   useEffect(() => {
     getMycart();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartItem]);
 
   const handleIncrement = async (productId: number, quantity: number) => {
@@ -40,6 +40,22 @@ const UserCart = () => {
     setCartItem(itemQuantity);
     toast.success(success.message);
     getUserCart(userId);
+  };
+
+  const handleCheckout = async (productId: number, quantity: number) => {
+    const formData = {
+      productId: productId,
+      quantity: quantity,
+    };
+    try {
+      const res = await ApiService.post(`order-item`, formData);
+      toast.success(res.data.message);
+      setTimeout(() => {
+        navigate("/checkout");
+      }, 2000);
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
   };
 
   return (
@@ -150,16 +166,19 @@ const UserCart = () => {
                     </p>
                   </div>
                 </div>
+                <div className="flex justify-center mb-4">
+                  <div className="w-[100%]">
+                    <button
+                      type="button"
+                      onClick={() => handleCheckout(cart.product.id, quantity)}
+                      className="btn btn-outline w-[100%]"
+                    >
+                      Proceed To Checkout
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
-
-            <div className="flex justify-center mb-4">
-              <div className="w-[100%]">
-                <Link to="/checkout" className="btn btn-outline w-[100%]">
-                  Proceed To Checkout
-                </Link>
-              </div>
-            </div>
           </div>
         </div>
       </div>
