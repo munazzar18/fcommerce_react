@@ -15,6 +15,7 @@ interface Product {
     category: Category;
     avg_reviews: number;
     userId: number;
+    user: User;
 }
 
 interface Category {
@@ -22,5 +23,15 @@ interface Category {
     category: string;
 }
 
+interface User {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+    mobile: string;
+    roles: string;
+    address: string;
+}
 
-export type { Cart, Product, Category }
+
+export type { Cart, Product, Category, User }

@@ -13,13 +13,13 @@ const LandingPage = () => {
   };
 
   const categories = [
-    { id: 1, category: "Mobile" },
-    { id: 2, category: "Headphones" },
-    { id: 3, category: "Airpods" },
-    { id: 4, category: "Chargers" },
-    { id: 5, category: "Camera" },
-    { id: 6, category: "Kids club" },
-    { id: 7, category: "Shoes" },
+    { id: 1, category: "Mobile", img: "category/mobile.jpg" },
+    { id: 2, category: "Headphones", img: "category/headphone.jpg" },
+    { id: 3, category: "Airpods", img: "category/airpods.jpg" },
+    { id: 4, category: "Chargers", img: "category/charger.jpg" },
+    { id: 5, category: "Camera", img: "category/camera.webp" },
+    { id: 6, category: "Kids club", img: "category/kidsclub.jpeg" },
+    { id: 7, category: "Shoes", img: "category/shoes.jpg" },
   ];
 
   useEffect(() => {
@@ -68,8 +68,9 @@ const LandingPage = () => {
                   <Link to={`categories/${cat.id}`}>
                     <figure>
                       <img
-                        src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
-                        alt="Shoes"
+                        src={cat.img}
+                        alt={cat.category}
+                        className="w-full aspect-[1] object-cover"
                       />
                     </figure>
                     <div className="p-4 flex justify-center align-middle">
@@ -98,7 +99,9 @@ const LandingPage = () => {
                         />
                       </figure>
                       <div className="card-body mb-2">
-                        <p className="font-bold"> {prod.title} </p>
+                        <p className="font-bold">
+                          {prod.title.substring(0, 44)}...
+                        </p>
                         <div className="flex justify-around">
                           <p className="indicator-item badge border-0 bg-[#030e12] text-my_white font-bold">
                             Rs.{prod.price}

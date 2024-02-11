@@ -11,7 +11,8 @@ const SellerDashboard = () => {
 
   const getMyProducts = async () => {
     const res = await ApiService.get(`product/userId/${userId}`);
-    setMyProducts(res.data.data);
+    const data = res.data;
+    setMyProducts(data);
   };
 
   useEffect(() => {
@@ -38,7 +39,7 @@ const SellerDashboard = () => {
               </thead>
               <tbody>
                 {myProducts?.map((product, index) => (
-                  <tr>
+                  <tr key={product.id}>
                     <th>{index + 1}</th>
                     <td>{product.title}</td>
                     <td>{product.price}</td>

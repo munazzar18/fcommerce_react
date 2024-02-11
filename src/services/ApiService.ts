@@ -66,6 +66,10 @@ class ApiService {
     return axios.post(`${resource}`, params);
   }
 
+  public static upload(resourse: string, params: any): Promise<AxiosResponse> {
+    return axios.post(`${resourse}`, params)
+  }
+
   /**
    * @description send the UPDATE HTTP request
    * @param resource: string

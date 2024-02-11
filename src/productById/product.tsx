@@ -1,17 +1,24 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faMinus,
+  faLocationDot,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useParams } from "react-router-dom";
 import CartContext from "../context/CartContext";
 import AuthService from "../services/AuthService";
 import { ToastContainer, toast } from "react-toastify";
+import { Product } from "../helper/interfaces";
+import ApiService from "../services/ApiService";
 
 const product = () => {
   const isLoggedIn = AuthService.isAuthenticated();
   const navigate = useNavigate();
   const { id } = useParams();
   const { setCartItem, addToCart, getUserCart } = useContext(CartContext);
+  const [product, setProduct] = useState<Product>();
 
   const [quantity, setQuantity] = useState(1);
 
@@ -21,7 +28,7 @@ const product = () => {
       const itemQuantity = success.data.quantity;
       setCartItem(itemQuantity);
       toast.success(success.message);
-      getUserCart(2)
+      getUserCart(2);
     } else {
       navigate("/login");
     }
@@ -37,6 +44,15 @@ const product = () => {
     }
   };
 
+  const getProductById = async () => {
+    const res = await ApiService.get(`product/${id}`);
+    setProduct(res.data.data);
+  };
+
+  useEffect(() => {
+    getProductById();
+  }, []);
+
   return (
     <div className="w-3/4 mx-auto mt-4 ">
       <div className="grid grid-cols-3 gap-2 mb-4 ">
@@ -49,30 +65,17 @@ const product = () => {
             dynamicHeight={true}
             className="rounded-b-lg"
           >
-            <div className="h-80">
-              <img
-                className="w-full aspect-[3/2] object-contain"
-                src="/test1.jpg"
-              />
-            </div>
-            <div className="h-80">
-              <img
-                className="w-full aspect-[3/2] object-contain"
-                src="/test2.jpg"
-              />
-            </div>
-            <div className="h-80">
-              <img
-                className="w-full aspect-[3/2] object-contain"
-                src="/test3.jpg"
-              />
-            </div>
+            {product?.images.map((img) => (
+              <div className="h-80" key={img}>
+                <img className="w-full aspect-[3/2] object-contain" src={img} />
+              </div>
+            ))}
           </Carousel>
         </div>
         <div className="mb-4 rounded-lg bg-my_white p-8">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-8">Product Title here</h1>
-            <h2 className="text-2xl font-bold">Product Price Here</h2>
+            <h1 className="text-xl font-bold mb-8"> {product?.title} </h1>
+            <h2 className="text-xl font-bold">Rs.{product?.price} </h2>
           </div>
 
           <div className="flex justify-start items-center mb-8">
@@ -83,6 +86,7 @@ const product = () => {
               <button
                 className="btn btn-sm btn-circle mr-2"
                 onClick={handleIncrement}
+                disabled={quantity === product?.quantity}
               >
                 <FontAwesomeIcon icon={faPlus} />
               </button>
@@ -90,12 +94,14 @@ const product = () => {
                 id="quantity"
                 type="text"
                 value={quantity}
+                max={product?.quantity}
                 onChange={(e: any) => setQuantity(e.target.value)}
                 className="input input-border-0 w-16 text-center"
               />
               <button
                 className="btn btn-sm btn-circle ml-2"
                 onClick={handleDecrement}
+                disabled={quantity === 1}
               >
                 <FontAwesomeIcon icon={faMinus} />
               </button>
@@ -117,20 +123,19 @@ const product = () => {
           </div>
         </div>
         <div className="mb-4 rounded-lg bg-my_white p-8">
-          <h2>Shipping Details here</h2>
+          <h5 className="text-base mb-2">Delivery</h5>
+
+          <p>
+            <span className="me-2">
+              <FontAwesomeIcon icon={faLocationDot} />
+            </span>
+            {product?.user.address}
+          </p>
         </div>
       </div>
       <div className="mb-4 rounded-lg bg-my_white p-8">
         <h3 className="text-xl font-semibold">Product Description</h3>
-        <p>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquid
-          alias ab ipsam officia id placeat repellat reprehenderit dolor quasi
-          quidem quae possimus facere corporis ipsum illum ratione nobis eaque
-          tempore, rem iste quos. Necessitatibus enim autem alias amet nostrum
-          nemo odit sint omnis ipsa consectetur, tempora voluptatum aspernatur
-          quae expedita nulla, dicta sed veritatis ea optio tenetur animi! Eos
-          quam culpa exercitationem voluptatibus dicta.
-        </p>
+        <p>{product?.description}</p>
       </div>
     </div>
   );

@@ -19,27 +19,19 @@ const AddProduct = () => {
     const res = await ApiService.get("category");
     setCategories(res.data.data);
   };
-  const handleFileChange = async (e) => {
+  const handleFileChange = async (e: any) => {
     const files = e.target.files;
-    console.log("Files:", files);
-
-    const formData = new FormData();
+    const filePathData = new FormData();
     for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
+      filePathData.append("files", files[i]);
     }
-
     try {
-      const res = await fetch("product/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      setFormData({ ...formData, images: data.data });
-      toast.success(data.message);
+      const res = await ApiService.upload("product/upload", filePathData);
+      setFormData({ ...formData, images: res.data.data });
+      toast.success(res.data.message);
       setSubmitDisabled(false);
-    } catch (error) {
-      toast.error("Error uploading files: " + error.message);
-      console.error("Error uploading files:", error);
+    } catch (error: any) {
+      toast.error(error.response.data.message);
     }
   };
 
@@ -53,13 +45,12 @@ const AddProduct = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
-    // try {
-    //   const res = await ApiService.post("product", formData);
-    //   toast.success(res.data.message);
-    // } catch (error: any) {
-    //   toast.error(error.response.data.message);
-    // }
+    try {
+      const res = await ApiService.post("product", formData);
+      toast.success(res.data.message);
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
   };
 
   useEffect(() => {
