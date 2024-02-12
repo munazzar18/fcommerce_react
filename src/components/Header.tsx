@@ -104,7 +104,7 @@ export default function Header() {
                     <a className="justify-between">Profile</a>
                   </li>
                   <li>
-                    <a>Settings</a>
+                    <Link to="/checkout">Checkout</Link>
                   </li>
                   {userRole === "seller" ? (
                     <li>

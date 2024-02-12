@@ -37,7 +37,8 @@ interface OrderItem {
     id: number;
     quantity: number;
     totalPrice: number;
-    product: Product
+    product: Product;
+    user: User;
 }
 
 

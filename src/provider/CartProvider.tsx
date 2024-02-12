@@ -16,7 +16,11 @@ const CartProvider = ({ children }: CartProviderProps) => {
     // return res.data;
     const res = await ApiService.get(`cart/userCart/${id}`);
     const data = res.data.data;
-    data.forEach((item: any) => setCartItem(item.quantity));
+    const total = data.reduce(
+      (total: number, item: number) => total + item.quantity,
+      0
+    );
+    setCartItem(total);
     return res.data;
   };
 

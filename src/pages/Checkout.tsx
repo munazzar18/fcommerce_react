@@ -15,7 +15,7 @@ const Checkout = () => {
     setItems(res.data.data);
   };
 
-  const handleOrder = () => {
+  const handleOrder = (orderIds: number[], productIds: number[]) => {
     navigate("/order");
   };
 
@@ -32,14 +32,12 @@ const Checkout = () => {
               className="col-span-7 p-4 bg-my_white rounded-lg"
               key={item.id}
             >
-              <h3 className="text-base mb-2">Deliver to: Buyer Name</h3>
+              <h3 className="text-base mb-2">
+                Deliver to: {item.user.firstName + " " + item.user.lastName}
+              </h3>
               <div className="mb-8">
-                <p className="text-sm">
-                  House no 25, Hussain Block, Cheema Town , phase1 Near govt
-                  Junior Model Girls High School Bahawalpur, Chaudhry town,
-                  Bahawalpur, Punjab, Near train station
-                </p>
-                <p className="text-sm">03047279400</p>
+                <p className="text-sm">{item.user.address}</p>
+                <p className="text-sm">{item.user.mobile}</p>
               </div>
               <div className="divider">Product Summary</div>
               <div className="mb-4">
@@ -102,11 +100,11 @@ const Checkout = () => {
                   <p className="text-sm font-semibold">Rs.{item.totalPrice}</p>
                 </div>
               </div>
-              <div className="flex justify-center mb-4">
+              <div className="flex justify-center">
                 <div className="w-[100%]">
                   <button
                     className="btn btn-outline w-[100%]"
-                    onClick={handleOrder}
+                    onClick={() => handleOrder(item.id, item.product.id)}
                   >
                     Place Order
                   </button>
