@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom";
 const UserCart = () => {
   const [carts, setCarts] = useState<Cart[]>([]);
   const [quantity, setQuantity] = useState(1);
+  const [subtotal, setSubtotal] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
   const navigate = useNavigate();
   const { cartItem, addToCart, removeFromCart, setCartItem, getUserCart } =
     useContext(CartContext);
@@ -20,11 +22,21 @@ const UserCart = () => {
   const getMycart = async () => {
     const res = await ApiService.get(`cart/userCart/${userId}`);
     setCarts(res.data?.data);
+    const total = carts?.reduce(
+      (total: number, item: Cart) => total + item.quantity,
+      0
+    );
+    const amount = carts?.reduce(
+      (amount: number, item: Cart) => amount + item.totalPrice,
+      0
+    );
+    setSubtotal(total);
+    setTotalAmount(amount);
   };
 
   useEffect(() => {
     getMycart();
-  }, [cartItem]);
+  }, [cartItem, subtotal, totalAmount]);
 
   const handleIncrement = async (productId: number, quantity: number) => {
     const success = await addToCart(productId, quantity);
@@ -32,6 +44,7 @@ const UserCart = () => {
     setCartItem(ItemQuantity);
     toast.success(success.message);
     getUserCart(userId);
+    getMycart();
   };
 
   const handleDecrement = async (productId: number, quantity: number) => {
@@ -40,6 +53,13 @@ const UserCart = () => {
     setCartItem(itemQuantity);
     toast.success(success.message);
     getUserCart(userId);
+    getMycart();
+  };
+
+  const handleChecked = async (productId: number, quantity: number) => {
+    await handleDecrement(productId, quantity);
+    getUserCart(userId);
+    getMycart();
   };
 
   const handleCheckout = async (productId: number, quantity: number) => {
@@ -72,7 +92,14 @@ const UserCart = () => {
                       <tr key={cart.id}>
                         <th>
                           <label>
-                            <input type="checkbox" className="checkbox" />
+                            <input
+                              type="checkbox"
+                              className="checkbox"
+                              checked={cartItem}
+                              onChange={() =>
+                                handleChecked(cart.product.id, quantity)
+                              }
+                            />
                           </label>
                         </th>
                         <td>
@@ -86,7 +113,7 @@ const UserCart = () => {
                               </div>
                             </div>
                             <div>
-                              <div className="font-bold">
+                              <div className="font-bold text-xs">
                                 {cart.product.title}
                               </div>
                               <div className="text-sm opacity-50">
@@ -138,47 +165,45 @@ const UserCart = () => {
           </div>
           <div className="col-span-5 p-4 bg-my_white">
             <h3 className="text-xl mb-4">Order Summary</h3>
-            {carts.map((cart) => (
-              <div key={cart.id}>
-                <div className="flex justify-between mb-4">
-                  <div className="">
-                    <p className="text-md">Subtotal ({cart.quantity} Items)</p>
-                  </div>
-                  <div className="">
-                    <p className="text-md">Rs.{cart.totalPrice}/-</p>
-                  </div>
+            <div>
+              <div className="flex justify-between mb-4">
+                <div className="">
+                  <p className="text-md">Subtotal ({subtotal} Items)</p>
                 </div>
-                <div className="flex justify-between mb-4">
-                  <div className="">
-                    <p className="text-md">Shipping Fee</p>
-                  </div>
-                  <div className="">
-                    <p className="text-md">Free</p>
-                  </div>
-                </div>
-                <div className="flex justify-between mb-4">
-                  <div className="">
-                    <p className="text-md">Total</p>
-                  </div>
-                  <div className="">
-                    <p className="text-md text-orange-400 font-semibold">
-                      Rs.{cart.totalPrice}/-
-                    </p>
-                  </div>
-                </div>
-                <div className="flex justify-center mb-4">
-                  <div className="w-[100%]">
-                    <button
-                      type="button"
-                      onClick={() => handleCheckout(cart.product.id, quantity)}
-                      className="btn btn-outline w-[100%]"
-                    >
-                      Proceed To Checkout
-                    </button>
-                  </div>
+                <div className="">
+                  <p className="text-md">Rs.{totalAmount}/-</p>
                 </div>
               </div>
-            ))}
+              <div className="flex justify-between mb-4">
+                <div className="">
+                  <p className="text-md">Shipping Fee</p>
+                </div>
+                <div className="">
+                  <p className="text-md">Free</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-between mb-4">
+              <div className="">
+                <p className="text-md">Total</p>
+              </div>
+              <div className="">
+                <p className="text-md text-orange-400 font-semibold">
+                  Rs.{totalAmount}/-
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-center mb-4">
+              <div className="w-[100%]">
+                <button
+                  type="button"
+                  onClick={() => handleCheckout(cart.product.id, quantity)}
+                  className="btn btn-outline w-[100%]"
+                >
+                  Proceed To Checkout
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
