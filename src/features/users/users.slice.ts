@@ -48,7 +48,7 @@ const usersSlice = createSlice({
                 state.password = action.payload.password;
             })
             .addCase(loginAsync.rejected, (state, action) => {
-                state = action.payload
+                state = action.payload as any
                 return state
             })
 

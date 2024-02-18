@@ -1,6 +1,7 @@
 import { ReactNode, useState } from "react";
 import CartContext from "../context/CartContext";
 import ApiService from "../services/ApiService";
+import { Cart } from "../helper/interfaces";
 
 interface CartProviderProps {
   children: ReactNode;
@@ -10,14 +11,10 @@ const CartProvider = ({ children }: CartProviderProps) => {
   const [cartItem, setCartItem] = useState(0);
 
   const getUserCart = async (id: number) => {
-    // const res = await ApiService.get(`order-item/userId/${id}`);
-    // const data = res.data.data;
-    // data.forEach((item) => setCartItem(item.quantity));
-    // return res.data;
     const res = await ApiService.get(`cart/userCart/${id}`);
     const data = res.data.data;
     const total = data.reduce(
-      (total: number, item: number) => total + item.quantity,
+      (total: number, item: Cart) => total + item.quantity,
       0
     );
     setCartItem(total);

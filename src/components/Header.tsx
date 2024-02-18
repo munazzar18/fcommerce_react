@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../services/AuthService";
 import { useContext, useEffect } from "react";
 import CartContext from "../context/CartContext";
+import { CartContextProps } from "../helper/interfaces";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function Header() {
     navigate("/login");
   };
 
-  const { cartItem, getUserCart } = useContext(CartContext);
+  const { cartItem, getUserCart } = useContext(CartContext) as CartContextProps;
 
   useEffect(() => {
     getUserCart(userId);

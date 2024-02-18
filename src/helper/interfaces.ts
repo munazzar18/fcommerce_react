@@ -41,5 +41,13 @@ interface OrderItem {
     user: User;
 }
 
+interface CartContextProps {
+    cartItem: number;
+    setCartItem: React.Dispatch<React.SetStateAction<number>>;
+    getUserCart: (id: number) => Promise<any>;
+    addToCart: (productId: number, quantity: number) => Promise<any>;
+    removeFromCart: (productId: number, quantity: number) => Promise<any>;
+}
 
-export type { Cart, OrderItem, Product, Category, User }
+
+export type { Cart, OrderItem, Product, Category, User, CartContextProps }

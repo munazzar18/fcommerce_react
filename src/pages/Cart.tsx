@@ -1,42 +1,48 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useEffect, useState } from "react";
 import ApiService from "../services/ApiService";
 import AuthService from "../services/AuthService";
-import { Cart } from "../helper/interfaces";
+import { Cart, CartContextProps } from "../helper/interfaces";
 import CartContext from "../context/CartContext";
 import { ToastContainer, toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const UserCart = () => {
   const [carts, setCarts] = useState<Cart[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [subtotal, setSubtotal] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { cartItem, addToCart, removeFromCart, setCartItem, getUserCart } =
-    useContext(CartContext);
+    useContext(CartContext) as CartContextProps;
   const user = AuthService.getUser();
   const userId = user?.id;
 
   const getMycart = async () => {
     const res = await ApiService.get(`cart/userCart/${userId}`);
     setCarts(res.data?.data);
-    const total = carts?.reduce(
-      (total: number, item: Cart) => total + item.quantity,
-      0
+    calculations();
+  };
+
+  const calculations = () => {
+    setSubtotal(() =>
+      carts?.reduce((total: number, item: Cart) => total + item.quantity, 0)
     );
-    const amount = carts?.reduce(
-      (amount: number, item: Cart) => amount + item.totalPrice,
-      0
+
+    setTotalAmount(() =>
+      carts?.reduce((amount: number, item: Cart) => amount + item.totalPrice, 0)
     );
-    setSubtotal(total);
-    setTotalAmount(amount);
   };
 
   useEffect(() => {
     getMycart();
-  }, [cartItem, subtotal, totalAmount]);
+    // calculations();
+  }, [cartItem]);
+
+  useEffect(() => {
+    getMycart();
+  }, []);
 
   const handleIncrement = async (productId: number, quantity: number) => {
     const success = await addToCart(productId, quantity);
@@ -62,20 +68,20 @@ const UserCart = () => {
     getMycart();
   };
 
-  const handleCheckout = async (productId: number, quantity: number) => {
-    const formData = {
-      productId: productId,
-      quantity: quantity,
-    };
-    try {
-      const res = await ApiService.post(`order-item`, formData);
-      toast.success(res.data.message);
-      setTimeout(() => {
-        navigate("/checkout");
-      }, 2000);
-    } catch (error: any) {
-      toast.error(error.response.data.message);
-    }
+  const handleCheckout = async () => {
+    // const formData = {
+    //   productId: productId,
+    //   quantity: quantity,
+    // };
+    // try {
+    //   const res = await ApiService.post(`order-item`, formData);
+    //   toast.success(res.data.message);
+    //   setTimeout(() => {
+    //     navigate("/checkout");
+    //   }, 2000);
+    // } catch (error: any) {
+    //   toast.error(error.response.data.message);
+    // }
   };
 
   return (
@@ -91,16 +97,14 @@ const UserCart = () => {
                     {carts.map((cart) => (
                       <tr key={cart.id}>
                         <th>
-                          <label>
-                            <input
-                              type="checkbox"
-                              className="checkbox"
-                              checked={cartItem}
-                              onChange={() =>
-                                handleChecked(cart.product.id, quantity)
-                              }
-                            />
-                          </label>
+                          <input
+                            type="checkbox"
+                            checked={cartItem ? true : false}
+                            className="checkbox"
+                            onChange={() =>
+                              handleChecked(cart.product.id, quantity)
+                            }
+                          />
                         </th>
                         <td>
                           <div className="flex items-center gap-3">
@@ -145,6 +149,7 @@ const UserCart = () => {
                               value={cart.quantity}
                               onChange={(e: any) => setQuantity(e.target.value)}
                               className="input input-border-0 w-16 text-center"
+                              disabled
                             />
                             <button
                               className="btn btn-sm btn-circle ml-2"
@@ -152,7 +157,11 @@ const UserCart = () => {
                                 handleDecrement(cart.product.id, quantity)
                               }
                             >
-                              <FontAwesomeIcon icon={faMinus} />
+                              {cart.quantity > 1 ? (
+                                <FontAwesomeIcon icon={faMinus} />
+                              ) : (
+                                <FontAwesomeIcon icon={faTrash} />
+                              )}
                             </button>
                           </div>
                         </th>
@@ -197,7 +206,7 @@ const UserCart = () => {
               <div className="w-[100%]">
                 <button
                   type="button"
-                  onClick={() => handleCheckout(cart.product.id, quantity)}
+                  onClick={() => handleCheckout()}
                   className="btn btn-outline w-[100%]"
                 >
                   Proceed To Checkout

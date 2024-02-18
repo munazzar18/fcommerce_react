@@ -12,12 +12,15 @@ import AuthService from "../services/AuthService";
 import { ToastContainer, toast } from "react-toastify";
 import { Product } from "../helper/interfaces";
 import ApiService from "../services/ApiService";
+import { CartContextProps } from "../helper/interfaces";
 
 const product = () => {
   const isLoggedIn = AuthService.isAuthenticated();
   const navigate = useNavigate();
-  const { id } = useParams();
-  const { setCartItem, addToCart, getUserCart } = useContext(CartContext);
+  const { id }: any = useParams();
+  const { setCartItem, addToCart, getUserCart } = useContext(
+    CartContext
+  ) as CartContextProps;
   const [product, setProduct] = useState<Product>();
 
   const [quantity, setQuantity] = useState(1);

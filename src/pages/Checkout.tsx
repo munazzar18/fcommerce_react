@@ -15,7 +15,8 @@ const Checkout = () => {
     setItems(res.data.data);
   };
 
-  const handleOrder = (orderIds: number[], productIds: number[]) => {
+  const handleOrder = (orderIds: number, productIds: number) => {
+    console.log(orderIds + "" + productIds);
     navigate("/order");
   };
 
