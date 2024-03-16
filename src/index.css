@@ -4,5 +4,19 @@
 
 body {
   color: #030e12; /* Sets the font color for the entire app */
-  background-color: #d1c6c5;
+  background-image: linear-gradient(
+    to left bottom,
+    #160037,
+    #002a5f,
+    #004f7f,
+    #007495,
+    #0099a3,
+    #1fadac,
+    #3cc1b3,
+    #59d5b8,
+    #5adfc6,
+    #5be8d4,
+    #5df2e2,
+    #5ffbf1
+  );
 }

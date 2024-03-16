@@ -37,6 +37,26 @@ const product = () => {
     }
   };
 
+  const handleBuyNow = async () => {
+    if (isLoggedIn) {
+      const formData = {
+        productId: id,
+        quantity: quantity,
+      };
+      try {
+        const res = await ApiService.post(`order-item`, formData);
+        toast.success(res.data.message);
+        setTimeout(() => {
+          navigate("/checkout");
+        }, 2000);
+      } catch (error: any) {
+        toast.error(error.response.data.message);
+      }
+    } else {
+      navigate("/login");
+    }
+  };
+
   const handleIncrement = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
   };
@@ -70,7 +90,10 @@ const product = () => {
           >
             {product?.images.map((img) => (
               <div className="h-80" key={img}>
-                <img className="w-full aspect-[3/2] object-contain" src={img} />
+                <img
+                  className="w-full aspect-square object-contain"
+                  src={img}
+                />
               </div>
             ))}
           </Carousel>
@@ -121,7 +144,9 @@ const product = () => {
               <ToastContainer />
             </div>
             <div className="mx-2 w-36">
-              <button className="btn btn-outline w-36">Buy Now</button>
+              <button className="btn btn-outline w-36" onClick={handleBuyNow}>
+                Buy Now
+              </button>
             </div>
           </div>
         </div>

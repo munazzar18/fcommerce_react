@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import ApiService from "../services/ApiService";
 import AuthService from "../services/AuthService";
 import { Cart, CartContextProps } from "../helper/interfaces";
@@ -22,18 +22,31 @@ const UserCart = () => {
   const getMycart = async () => {
     const res = await ApiService.get(`cart/userCart/${userId}`);
     setCarts(res.data?.data);
-    calculations();
+    // calculations();
   };
 
   const calculations = () => {
-    setSubtotal(() =>
-      carts?.reduce((total: number, item: Cart) => total + item.quantity, 0)
+    // setSubtotal(() =>
+    //   carts?.reduce((total: number, item: Cart) => total + item.quantity, 0)
+    // );
+    // setTotalAmount(() =>
+    //   carts?.reduce((amount: number, item: Cart) => amount + item.totalPrice, 0)
+    // );
+  };
+
+  useMemo(() => {
+    const calculatedSubtotal = carts?.reduce(
+      (total: number, item: Cart) => total + item.quantity,
+      0
+    );
+    const calculatedTotalAmount = carts?.reduce(
+      (amount: number, item: Cart) => amount + item.totalPrice,
+      0
     );
 
-    setTotalAmount(() =>
-      carts?.reduce((amount: number, item: Cart) => amount + item.totalPrice, 0)
-    );
-  };
+    setSubtotal(calculatedSubtotal);
+    setTotalAmount(calculatedTotalAmount);
+  }, [carts]);
 
   useEffect(() => {
     getMycart();
@@ -42,6 +55,7 @@ const UserCart = () => {
 
   useEffect(() => {
     getMycart();
+    // calculations();
   }, []);
 
   const handleIncrement = async (productId: number, quantity: number) => {
