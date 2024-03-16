@@ -22,16 +22,6 @@ const UserCart = () => {
   const getMycart = async () => {
     const res = await ApiService.get(`cart/userCart/${userId}`);
     setCarts(res.data?.data);
-    // calculations();
-  };
-
-  const calculations = () => {
-    // setSubtotal(() =>
-    //   carts?.reduce((total: number, item: Cart) => total + item.quantity, 0)
-    // );
-    // setTotalAmount(() =>
-    //   carts?.reduce((amount: number, item: Cart) => amount + item.totalPrice, 0)
-    // );
   };
 
   useMemo(() => {
@@ -50,12 +40,10 @@ const UserCart = () => {
 
   useEffect(() => {
     getMycart();
-    // calculations();
   }, [cartItem]);
 
   useEffect(() => {
     getMycart();
-    // calculations();
   }, []);
 
   const handleIncrement = async (productId: number, quantity: number) => {
